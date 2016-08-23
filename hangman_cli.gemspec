@@ -7,7 +7,6 @@ Gem::Specification.new do |spec|
   spec.name          = "hangman_cli"
   spec.version       = HangmanCli::VERSION
   spec.authors       = ["Neal Blomfield"]
-  spec.email         = ["neal.blomfield@gmail.com"]
 
   spec.summary       = %q{Command line hangman}
   spec.description   = %q{A command line hangman implementation in ruby.}
@@ -17,7 +16,7 @@ Gem::Specification.new do |spec|
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = 'http://notpublishablegemserver.com'
+    spec.metadata['allowed_push_host'] = 'http://donotpublishthisgem.com'
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end

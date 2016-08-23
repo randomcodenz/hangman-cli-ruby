@@ -8,7 +8,18 @@ describe HangmanCli do
     expect(HangmanCli::VERSION).not_to be nil
   end
 
-  it 'prints a welcome message' do
-    expect { HangmanCli::CLI.start }.to output(HangmanCli::WELCOME + "\n").to_stdout
+  describe ".start" do
+    it 'prints a welcome message' do
+      expect { HangmanCli::CLI.start }.to output(HangmanCli::WELCOME + "\n").to_stdout
+    end
+
+    context "when answering 'y'" do
+      it 'starts a new game' do
+        expect {
+          HangmanCli::CLI.start
+          #TODO aruba for command line testing
+        }
+      end
+    end
   end
 end
