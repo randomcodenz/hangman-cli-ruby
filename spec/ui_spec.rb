@@ -27,26 +27,43 @@ describe HangmanCLI::UI do
 
     context 'when responding y' do
       before { input.string = 'y' }
+
       it 'returns true' do
         expect( subject.start_game? ).to eq  true
       end
     end
 
-    #context 'when responding n' do
-      # It returns false
-    #end
+    context 'when responding n' do
+      before { input.string = 'n' }
 
-    #context 'when responding yes' do
-      # It returns true
-    #end
+      it 'returns false' do
+        expect( subject.start_game? ).to eq false
+      end
+    end
 
-    #context 'when responding no' do
-      # It returns false
-    #end
+    context 'when responding yes' do
+      before { input.string = 'yes' }
 
-    #context 'when responding with any other value' do
-      # It returns false
-    #end
+      it 'returns true' do
+        expect( subject.start_game? ).to eq true
+      end
+    end
+
+    context 'when responding no' do
+      before { input.string = 'no' }
+
+      it 'returns false' do
+        expect( subject.start_game? ).to eq false
+      end
+    end
+
+    context 'when responding with any other value' do
+      before { input.string = 'WOPR' }
+
+      it 'returns false' do
+        expect( subject.start_game? ).to eq false
+      end
+    end
 
   end
 end

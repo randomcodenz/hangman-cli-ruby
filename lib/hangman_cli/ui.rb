@@ -2,6 +2,8 @@ module HangmanCLI
   class UI
 
     START_GAME = 'Would you like to play a game? (y/n): '
+    YES = [ 'y', 'yes' ]
+    EMPTY_RESPONSE = ''
 
     def initialize( input, output, error )
       @input = input
@@ -12,10 +14,12 @@ module HangmanCLI
     def start_game?
       @output.print( START_GAME )
 
-      @choice = @input.gets
-      @choice &&= @choice.chomp.downcase
+      @choice = @input.gets || EMPTY_RESPONSE
+      @choice.chomp!
+      @choice.downcase!
 
-      @choice == 'y' ? true : false;
+      # FIXME: I look like shit
+      YES.any? { |yes| @choice == yes  }
     end
   end
 end
