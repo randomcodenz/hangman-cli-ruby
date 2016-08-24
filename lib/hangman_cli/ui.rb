@@ -10,10 +10,10 @@ module HangmanCLI
     end
 
     def start_game?
-      @output.print START_GAME
+      @output.print( START_GAME )
 
       @choice = @input.gets
-      @choice &&= choice.chomp.downcase
+      @choice &&= @choice.chomp.downcase
 
       @choice == 'y' ? true : false;
     end

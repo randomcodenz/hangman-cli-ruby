@@ -9,19 +9,28 @@ describe HangmanCLI::UI do
   subject { HangmanCLI::UI.new(input, output, error) }
 
   describe '#start_game?' do
-    before { subject.start_game? }
 
-    it 'outputs a welcome message' do
-      expect(output.string).to match( HangmanCLI::UI::START_GAME )
+    context 'on every call' do
+      before { subject.start_game? }
+
+      it 'outputs a welcome message' do
+        expect(output.string).to match( HangmanCLI::UI::START_GAME )
+      end
     end
 
-    #context 'when responding with nil' do
-      # It returns false
-    #end
+    context 'when responding with nil' do
+      # nil is implied as input.string has not been initialised
+      it 'returns false' do
+        expect( subject.start_game? ).to eq false
+      end
+    end
 
-    #context 'when responding y' do
-      # It returns true
-    #end
+    context 'when responding y' do
+      before { input.string = 'y' }
+      it 'returns true' do
+        expect( subject.start_game? ).to eq  true
+      end
+    end
 
     #context 'when responding n' do
       # It returns false
