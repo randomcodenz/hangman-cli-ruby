@@ -13,8 +13,8 @@ describe HangmanCLI::UI do
     context 'on every call' do
       before { subject.start_game? }
 
-      it 'outputs a welcome message' do
-        expect(output.string).to match( HangmanCLI::UI::START_GAME )
+      it 'outputs the start game message' do
+        expect(output.string).to match(HangmanCLI::UI::START_GAME)
       end
     end
 
@@ -65,5 +65,21 @@ describe HangmanCLI::UI do
       end
     end
 
+  end
+
+  describe '#invalid_word_error' do
+    before { subject.invalid_word_error }
+
+    it 'outputs the invalid word error' do
+      expect(error.string.chomp).to match(HangmanCLI::UI::INVALID_WORD_ERROR)
+    end
+  end
+
+  describe '#default_lives_warning' do
+    before { subject.default_lives_warning }
+
+    it 'outputs the default lives warning' do
+      expect(output.string.chomp).to match(HangmanCLI::UI::DEFAULT_LIVES_WARNING)
+    end
   end
 end
