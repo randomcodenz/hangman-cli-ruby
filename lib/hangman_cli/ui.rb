@@ -12,14 +12,13 @@ module HangmanCLI
     end
 
     def start_game?
-      @output.print( START_GAME )
+      @output.print START_GAME
 
       @choice = @input.gets || EMPTY_RESPONSE
       @choice.chomp!
       @choice.downcase!
 
-      # FIXME: I look like shit
-      YES.any? { |yes| @choice == yes  }
+      YES.include? @choice
     end
   end
 end

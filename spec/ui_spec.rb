@@ -21,7 +21,7 @@ describe HangmanCLI::UI do
     context 'when responding with nil' do
       # nil is implied as input.string has not been initialised
       it 'returns false' do
-        expect( subject.start_game? ).to eq false
+        expect(subject.start_game?).to eq false
       end
     end
 
@@ -29,7 +29,7 @@ describe HangmanCLI::UI do
       before { input.string = 'y' }
 
       it 'returns true' do
-        expect( subject.start_game? ).to eq  true
+        expect(subject.start_game?).to eq  true
       end
     end
 
@@ -37,7 +37,7 @@ describe HangmanCLI::UI do
       before { input.string = 'n' }
 
       it 'returns false' do
-        expect( subject.start_game? ).to eq false
+        expect(subject.start_game?).to eq false
       end
     end
 
@@ -45,7 +45,7 @@ describe HangmanCLI::UI do
       before { input.string = 'yes' }
 
       it 'returns true' do
-        expect( subject.start_game? ).to eq true
+        expect(subject.start_game?).to eq true
       end
     end
 
@@ -53,7 +53,7 @@ describe HangmanCLI::UI do
       before { input.string = 'no' }
 
       it 'returns false' do
-        expect( subject.start_game? ).to eq false
+        expect(subject.start_game?).to eq false
       end
     end
 
@@ -61,7 +61,7 @@ describe HangmanCLI::UI do
       before { input.string = 'WOPR' }
 
       it 'returns false' do
-        expect( subject.start_game? ).to eq false
+        expect(subject.start_game?).to eq false
       end
     end
 
