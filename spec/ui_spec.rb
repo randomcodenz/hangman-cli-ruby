@@ -13,8 +13,8 @@ module HangmanCLI
       context 'on every call' do
         before { game.confirm_start_game }
 
-        it 'outputs the start game message' do
-          expect(output.string).to match(UI::START_GAME)
+        it 'outputs a confirmation' do
+          expect(output.string).not_to be_nil
         end
       end
 
@@ -69,16 +69,18 @@ module HangmanCLI
     describe '#invalid_word_error' do
       before { game.invalid_word_error }
 
-      it 'outputs the invalid word error' do
-        expect(error.string.chomp).to match(UI::INVALID_WORD_ERROR)
+      it 'outputs an error' do
+        expect(error.string).not_to be_empty
+        expect(output.string).to be_empty
       end
     end
 
     describe '#default_lives_warning' do
       before { game.default_lives_warning }
 
-      it 'outputs the default lives warning' do
-        expect(output.string.chomp).to match(UI::DEFAULT_LIVES_WARNING)
+      it 'outputs a warning' do
+        expect(output.string).not_to be_empty
+        expect(error.string).to be_empty
       end
     end
 
