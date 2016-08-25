@@ -21,13 +21,22 @@ module HangmanCLI
       @error.puts INVALID_WORD_ERROR
     end
 
-    # Rename and extract the retrieval of the choice
     def confirm_start_game
       @output.print START_GAME
 
       choice = get_user_input
 
       YES.include? choice
+    end
+
+    def game_won(word, guesses_required)
+      #TODO: Handle nil args?
+      @output.puts "Congratulations! You have correctly guessed #{ word } in #{ guesses_required } guesses."
+    end
+
+    def game_lost(word)
+      #TODO: handle nil args?
+      @output.puts "You appear to have run out of lives. The word was #{ word }."
     end
 
     private

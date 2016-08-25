@@ -81,5 +81,22 @@ module HangmanCLI
         expect(output.string.chomp).to match(UI::DEFAULT_LIVES_WARNING)
       end
     end
+
+    describe '#game_won' do
+      let(:word) { 'Powershop' }
+      let(:guesses_required) { 3 }
+
+      before { game.game_won(word, guesses_required) }
+
+      context 'outputs the game won message' do
+        it 'includes the word' do
+          expect(output.string).to include(word)
+        end
+
+        it 'includes the guesses required' do
+          expect(output.string).to include(guesses_required.to_s)
+        end
+      end
+    end
   end
 end

@@ -6,9 +6,9 @@ module HangmanCLI
   LIVES = 5
   WORD = 'Powershop'
 
-  shared_examples 'a game with invalid lives' do
-    it 'resets lives to default' do
-      expect(subject.lives).to eq Game::DEFAULT_LIVES
+  shared_examples 'a game with invalid initial lives' do
+    it 'resets initial lives to default' do
+      expect(subject.initial_lives).to eq Game::DEFAULT_LIVES
     end
 
     it 'warns the user' do
@@ -28,7 +28,7 @@ module HangmanCLI
   end
 
   describe Game do
-    context 'when starting a game with invalid lives' do
+    context 'when starting a game with invalid initial lives' do
       let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => true) }
 
       subject { Game.new(ui, lives, WORD) }
@@ -38,7 +38,7 @@ module HangmanCLI
 
         before { subject.start }
 
-        it_behaves_like 'a game with invalid lives'
+        it_behaves_like 'a game with invalid initial lives'
       end
 
       context 'and lives > 10' do
@@ -46,7 +46,7 @@ module HangmanCLI
 
         before { subject.start }
 
-        it_behaves_like 'a game with invalid lives'
+        it_behaves_like 'a game with invalid initial lives'
       end
 
       context 'and lives is nil' do
@@ -54,7 +54,7 @@ module HangmanCLI
 
         before { subject.start }
 
-        it_behaves_like 'a game with invalid lives'
+        it_behaves_like 'a game with invalid initial lives'
       end
     end
 
