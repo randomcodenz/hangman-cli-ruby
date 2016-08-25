@@ -29,7 +29,7 @@ module HangmanCLI
 
   describe Game do
     context 'when starting a game with invalid lives' do
-      let(:ui) { instance_double(UI, :default_lives_warning => nil) }
+      let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => true) }
 
       subject { Game.new(ui, lives, WORD) }
 
@@ -59,7 +59,7 @@ module HangmanCLI
     end
 
     context 'when starting a game with an invalid word' do
-      let(:ui) { instance_double(UI, :invalid_word_error => nil) }
+      let(:ui) { instance_double(UI, :invalid_word_error => nil, :confirm_start_game => true) }
 
       subject { Game.new( ui, LIVES, word) }
 

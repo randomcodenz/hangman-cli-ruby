@@ -22,14 +22,19 @@ module HangmanCLI
     end
 
     # Rename and extract the retrieval of the choice
-    def start_game?
+    def confirm_start_game
       @output.print START_GAME
 
-      @choice = @input.gets || EMPTY_RESPONSE
-      @choice.chomp!
-      @choice.downcase!
+      choice = get_user_input
 
-      YES.include? @choice
+      YES.include? choice
+    end
+
+    private
+
+    def get_user_input
+      user_input = @input.gets || EMPTY_RESPONSE
+      user_input.chomp.downcase
     end
   end
 end

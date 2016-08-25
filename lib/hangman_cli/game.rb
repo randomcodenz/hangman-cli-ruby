@@ -17,7 +17,7 @@ module HangmanCLI
       validate_lives!
       validate_word!
 
-      run if valid_word?
+      run if valid_word? && @ui.confirm_start_game
     end
 
     private

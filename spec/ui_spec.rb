@@ -9,9 +9,9 @@ module HangmanCLI
 
     subject(:game) { UI.new(input, output, error) }
 
-    describe '#start_game?' do
+    describe '#confirm_start_game' do
       context 'on every call' do
-        before { game.start_game? }
+        before { game.confirm_start_game }
 
         it 'outputs the start game message' do
           expect(output.string).to match(UI::START_GAME)
@@ -21,7 +21,7 @@ module HangmanCLI
       context 'when responding with nil' do
         # nil is implied as input.string has not been initialised
         it 'returns false' do
-          expect(game.start_game?).to eq false
+          expect(game.confirm_start_game).to eq false
         end
       end
 
@@ -29,7 +29,7 @@ module HangmanCLI
         before { input.string = 'y' }
 
         it 'returns true' do
-          expect(game.start_game?).to eq  true
+          expect(game.confirm_start_game).to eq  true
         end
       end
 
@@ -37,7 +37,7 @@ module HangmanCLI
         before { input.string = 'n' }
 
         it 'returns false' do
-          expect(game.start_game?).to eq false
+          expect(game.confirm_start_game).to eq false
         end
       end
 
@@ -45,7 +45,7 @@ module HangmanCLI
         before { input.string = 'yes' }
 
         it 'returns true' do
-          expect(game.start_game?).to eq true
+          expect(game.confirm_start_game).to eq true
         end
       end
 
@@ -53,7 +53,7 @@ module HangmanCLI
         before { input.string = 'no' }
 
         it 'returns false' do
-          expect(game.start_game?).to eq false
+          expect(game.confirm_start_game).to eq false
         end
       end
 
@@ -61,7 +61,7 @@ module HangmanCLI
         before { input.string = 'WOPR' }
 
         it 'returns false' do
-          expect(game.start_game?).to eq false
+          expect(game.confirm_start_game).to eq false
         end
       end
     end
