@@ -3,7 +3,7 @@ module HangmanCLI
     DEFAULT_LIVES = 5
     MIN_LIVES = 1
     MAX_LIVES = 10
-    VALID_WORD_PATTERN = /[A-Za-z]/
+    VALID_WORD_PATTERN = /^[A-Za-z]+$/
 
     attr_reader :lives
 
@@ -24,6 +24,7 @@ module HangmanCLI
 
     def validate_lives!
       valid_lives = @lives && lives.between?(MIN_LIVES, MAX_LIVES)
+
       if !valid_lives
         @lives = DEFAULT_LIVES
         @ui.default_lives_warning

@@ -7,7 +7,7 @@ module HangmanCLI
     DEFAULT_LIVES_WARNING = 'Invalid number of lives; reset to default'
     INVALID_WORD_ERROR = 'Game cannot start, the word you have entered is invalid.'
 
-    def initialize( input, output, error )
+    def initialize(input, output, error)
       @input = input
       @output = output
       @error = error
@@ -21,6 +21,7 @@ module HangmanCLI
       @error.puts INVALID_WORD_ERROR
     end
 
+    # Rename and extract the retrieval of the choice
     def start_game?
       @output.print START_GAME
 

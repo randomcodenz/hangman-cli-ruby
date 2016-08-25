@@ -2,90 +2,83 @@ require 'spec_helper'
 require 'hangman_cli/game'
 require 'hangman_cli/ui'
 
-LIVES = 5
-WORD = 'Powershop'
+module HangmanCLI
+  LIVES = 5
+  WORD = 'Powershop'
 
-shared_examples 'a game with invalid lives' do
-  it 'resets lives to default' do
-    expect(subject.lives).to eq HangmanCLI::Game::DEFAULT_LIVES
+  shared_examples 'a game with invalid lives' do
+    it 'resets lives to default' do
+      expect(subject.lives).to eq Game::DEFAULT_LIVES
+    end
+
+    it 'warns the user' do
+      expect(ui).to have_received(:default_lives_warning)
+    end
   end
 
-  it 'warns the user' do
-    expect(ui).to have_received(:default_lives_warning)
-  end
-end
+  shared_examples 'a game with an invalid word' do
+    it 'outputs the invalid word error' do
+      expect(ui).to have_received(:invalid_word_error)
+    end
 
-shared_examples 'a game with an invalid word' do
-  it 'outputs the invalid word error' do
-    expect(ui).to have_received(:invalid_word_error)
+    it 'ends the game' do
+      #TODO: How can we test this?
+      skip "How do we test the game has ended?"
+    end
   end
 
-  it 'ends the game' do
-    #TODO: How can we test this?
-    skip "How do we test the game has ended?"
-  end
-end
+  describe Game do
+    context 'when starting a game with invalid lives' do
+      let(:ui) { instance_double(UI, :default_lives_warning => nil) }
 
-describe HangmanCLI::Game do
-  context 'when starting a game with invalid lives' do
-    let(:ui) do
-      instance_double('HangmanCLI::UI').tap do |ui|
-        allow(ui).to receive(:default_lives_warning)
+      subject { Game.new(ui, lives, WORD) }
+
+      context 'and lives < 1' do
+        let(:lives) { 0 }
+
+        before { subject.start }
+
+        it_behaves_like 'a game with invalid lives'
+      end
+
+      context 'and lives > 10' do
+        let(:lives) { 99 }
+
+        before { subject.start }
+
+        it_behaves_like 'a game with invalid lives'
+      end
+
+      context 'and lives is nil' do
+        let(:lives) { nil }
+
+        before { subject.start }
+
+        it_behaves_like 'a game with invalid lives'
       end
     end
 
-    context 'and lives < 1' do
-      subject { HangmanCLI::Game.new(ui, 0, WORD) }
+    context 'when starting a game with an invalid word' do
+      let(:ui) { instance_double(UI, :invalid_word_error => nil) }
 
-      before { subject.start }
+      subject { Game.new( ui, LIVES, word) }
 
-      it_should_behave_like 'a game with invalid lives'
-    end
+      context 'and the word contains numbers' do
+        let(:word) { 'P0wershop' }
 
-    context 'and lives > 10' do
-      subject{ HangmanCLI::Game.new(ui, 99, WORD) }
+        before { subject.start }
 
-      before { subject.start }
-
-      it_should_behave_like 'a game with invalid lives'
-    end
-
-    context 'and lives is nil' do
-      subject { HangmanCLI::Game.new(ui, nil, WORD) }
-
-      before { subject.start }
-
-      it_should_behave_like 'a game with invalid lives'
-    end
-  end
-
-  context 'when starting a game with an invalid word' do
-    let(:ui) do
-      instance_double('HangmanCLI::UI').tap do |ui|
-        allow(ui).to receive(:invalid_word_error)
+        it_behaves_like 'a game with an invalid word'
       end
+
+      context 'and the word is nil' do
+        let(:word) { nil }
+
+        before { subject.start }
+
+        it_behaves_like 'a game with an invalid word'
+      end
+
     end
-
-    context 'and the word contains numbers' do
-      subject { HangmanCLI::Game.new( ui, LIVES, '123467') }
-
-      before { subject.start }
-
-      it_should_behave_like 'a game with an invalid word'
-    end
-
-    context 'and the word is nil' do
-      subject { HangmanCLI::Game.new( ui, LIVES, nil) }
-
-      before { subject.start }
-
-      it_should_behave_like 'a game with an invalid word'
-    end
-
   end
-
-  # Subject for a valid game
-  #subject { HangmanCLI::Game.new( ui, LIVES, WORD )}
-
-
 end
