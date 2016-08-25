@@ -88,13 +88,25 @@ module HangmanCLI
 
       before { game.game_won(word, guesses_required) }
 
-      context 'outputs the game won message' do
+      context 'the game won message' do
         it 'includes the word' do
           expect(output.string).to include(word)
         end
 
         it 'includes the guesses required' do
           expect(output.string).to include(guesses_required.to_s)
+        end
+      end
+    end
+
+    describe '#game_lost' do
+      let(:word) { 'Powershop' }
+
+      before { game.game_lost(word) }
+
+      context 'the game lost message' do
+        it 'includes the word' do
+          expect(output.string).to include(word)
         end
       end
     end

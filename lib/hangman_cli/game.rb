@@ -81,7 +81,8 @@ module HangmanCLI
     def show_game_over
       guesses = @initial_lives - @lives_remaining
       @ui.game_won(@word, guesses) if game_won?
-      @ui.game_lost(@word, @initial_lives) if game_lost?
+      
+      @ui.game_lost(@word) if game_lost?
     end
   end
 end
