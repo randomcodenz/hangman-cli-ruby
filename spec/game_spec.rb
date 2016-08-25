@@ -6,13 +6,26 @@ LIVES = 5
 WORD = 'Powershop'
 
 describe HangmanCLI::Game do
-  let(:ui) { instance_double('UI') }
+  let(:ui) do
+    instance_double( 'HangmanCLI::UI' ).tap do |ui|
+      allow(ui).to receive(:default_lives_warning)
+    end
+  end
 
   context 'when starting an invalid game' do
 
     context 'with not enough lives' do
-      it 'resets lives to default'
-      it 'warns the user'
+      subject { HangmanCLI::Game.new(ui, 0, WORD) }
+
+      before { subject.start }
+
+      it 'resets lives to default' do
+        expect(subject.lives).to eq HangmanCLI::Game::DEFAULT_LIVES
+      end
+
+      it 'warns the user' do
+        expect(ui).to have_received(:default_lives_warning)
+      end
     end
 
     context 'with too many lives' do

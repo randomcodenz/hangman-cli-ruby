@@ -5,6 +5,8 @@ module HangmanCLI
     MAX_LIVES = 10
     VALID_WORD_PATTERN = /[A-Za-z]/
 
+    attr_reader :lives
+
     def initialize( ui, lives, word )
       @ui = ui
       @lives = lives
@@ -24,19 +26,19 @@ module HangmanCLI
       valid_lives = @lives && lives.between?(MIN_LIVES, MAX_LIVES)
       if !valid_lives
         @lives = DEFAULT_LIVES
-        ui.default_lives_warning
+        @ui.default_lives_warning
       end
     end
 
     def validate_word!
       if !valid_word?
         @word = nil
-        ui.invalid_word_error
+        @ui.invalid_word_error
       end
     end
 
     def valid_word?
-      @word && word.matches(VALID_WORD_PATTERN)
+      @word && @word.match(VALID_WORD_PATTERN)
     end
 
     def run
