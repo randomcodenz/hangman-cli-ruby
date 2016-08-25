@@ -29,8 +29,17 @@ describe HangmanCLI::Game do
     end
 
     context 'with too many lives' do
-      it 'resets lives to default'
-      it 'warns the user'
+      subject{ HangmanCLI::Game.new(ui, 99, WORD) }
+
+      before { subject.start }
+
+      it 'resets lives to default' do
+        expect(subject.lives).to eq HangmanCLI::Game::DEFAULT_LIVES
+      end
+
+      it 'warns the user' do
+        expect(ui).to have_received(:default_lives_warning)
+      end
     end
 
     context 'with nil lives' do
