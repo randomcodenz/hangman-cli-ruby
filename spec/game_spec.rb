@@ -15,16 +15,26 @@ shared_examples 'a game with invalid lives' do
   end
 end
 
-describe HangmanCLI::Game do
-  let(:ui) do
-    instance_double( 'HangmanCLI::UI' ).tap do |ui|
-      allow(ui).to receive(:default_lives_warning)
-    end
+shared_examples 'a game with an invalid word' do
+  it 'outputs the invalid word error' do
+    expect(ui).to have_received(:invalid_word_error)
   end
 
-  context 'when starting an invalid game' do
+  it 'ends the game' do
+    #TODO: How can we test this?
+    skip "How do we test the game has ended?"
+  end
+end
 
-    context 'with not enough lives' do
+describe HangmanCLI::Game do
+  context 'when starting a game with invalid lives' do
+    let(:ui) do
+      instance_double('HangmanCLI::UI').tap do |ui|
+        allow(ui).to receive(:default_lives_warning)
+      end
+    end
+
+    context 'and lives < 1' do
       subject { HangmanCLI::Game.new(ui, 0, WORD) }
 
       before { subject.start }
@@ -32,7 +42,7 @@ describe HangmanCLI::Game do
       it_should_behave_like 'a game with invalid lives'
     end
 
-    context 'with too many lives' do
+    context 'and lives > 10' do
       subject{ HangmanCLI::Game.new(ui, 99, WORD) }
 
       before { subject.start }
@@ -40,22 +50,36 @@ describe HangmanCLI::Game do
       it_should_behave_like 'a game with invalid lives'
     end
 
-    context 'with nil lives' do
+    context 'and lives is nil' do
       subject { HangmanCLI::Game.new(ui, nil, WORD) }
 
       before { subject.start }
 
       it_should_behave_like 'a game with invalid lives'
     end
+  end
 
-    context 'with an invalid word' do
-      it 'outputs the invalid word error'
-      it 'ends the game'
+  context 'when starting a game with an invalid word' do
+    let(:ui) do
+      instance_double('HangmanCLI::UI').tap do |ui|
+        allow(ui).to receive(:invalid_word_error)
+      end
     end
 
-    context 'with nil word' do
-      it 'outputs the invalid word error'
-      it 'ends the game'
+    context 'and the word contains numbers' do
+      subject { HangmanCLI::Game.new( ui, LIVES, '123467') }
+
+      before { subject.start }
+
+      it_should_behave_like 'a game with an invalid word'
+    end
+
+    context 'and the word is nil' do
+      subject { HangmanCLI::Game.new( ui, LIVES, nil) }
+
+      before { subject.start }
+
+      it_should_behave_like 'a game with an invalid word'
     end
 
   end
