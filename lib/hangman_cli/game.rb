@@ -5,7 +5,7 @@ module HangmanCLI
     MAX_LIVES = 10
     VALID_WORD_PATTERN = /^[A-Za-z]+$/
 
-    attr_reader :initial_lives
+    attr_reader :initial_lives, :lives_remaining
 
     def initialize( ui, initial_lives, word )
       @ui = ui
@@ -25,14 +25,14 @@ module HangmanCLI
     def validate_initial_lives!
       valid_lives = @initial_lives && @initial_lives.between?(MIN_LIVES, MAX_LIVES)
 
-      if !valid_lives
+      unless valid_lives
         @initial_lives = DEFAULT_LIVES
         @ui.default_lives_warning
       end
     end
 
     def validate_word!
-      if !valid_word?
+      unless valid_word?
         @word = nil
         @ui.invalid_word_error
       end
@@ -43,20 +43,18 @@ module HangmanCLI
     end
 
     def run
-      # set up game
+      @guesses = 0
       @lives_remaining = @initial_lives
-      #  -
-      # game loop
-      #until game_over?
-      #  output active game state
-      #   - lives remaining
-      #   - masked word
-      #   - previous guesses
-      #  get guess
-      #  validate guess
-      #  update game state
-      #@lives_remaining -= 1
-      #end
+
+      until game_over?
+        @ui.show_game_state([nil], @lives_remaining)
+        guess = @ui.get_guess
+
+        @guesses += 1
+        @word_guessed = @word == guess
+
+        @lives_remaining -= 1 unless word_guessed?
+      end
 
       show_game_over
     end
@@ -74,14 +72,11 @@ module HangmanCLI
     end
 
     def word_guessed?
-      # TODO: Implement me!
-      false
+      @word_guessed
     end
 
     def show_game_over
-      guesses = @initial_lives - @lives_remaining
-      @ui.game_won(@word, guesses) if game_won?
-      
+      @ui.game_won(@word, @guesses, @lives_remaining) if game_won?
       @ui.game_lost(@word) if game_lost?
     end
   end

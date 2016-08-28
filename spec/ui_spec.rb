@@ -87,8 +87,9 @@ module HangmanCLI
     describe '#game_won' do
       let(:word) { 'Powershop' }
       let(:guesses_required) { 3 }
+      let(:lives_remaining) { 5 }
 
-      before { game.game_won(word, guesses_required) }
+      before { game.game_won(word, guesses_required, lives_remaining) }
 
       context 'the game won message' do
         it 'includes the word' do
@@ -97,6 +98,10 @@ module HangmanCLI
 
         it 'includes the guesses required' do
           expect(output.string).to include(guesses_required.to_s)
+        end
+
+        it 'includes the lives remaining' do
+          expect(output.string).to include(lives_remaining.to_s)
         end
       end
     end
@@ -109,6 +114,41 @@ module HangmanCLI
       context 'the game lost message' do
         it 'includes the word' do
           expect(output.string).to include(word)
+        end
+      end
+    end
+
+    describe '#show_game_state' do
+      let(:word) { 'Powershop'.chars }
+      let(:lives_remaining) { 2 }
+
+      before { game.show_game_state(word, lives_remaining) }
+
+      it 'renders the number of lives remaining' do
+        expect(output.string).to include(lives_remaining.to_s)
+      end
+
+      context 'when there are no missing letters' do
+        let(:word) { 'WOPR'.chars }
+
+        it 'renders the word' do
+          expect(output.string).to include('W O P R')
+        end
+      end
+
+      context 'when there are some missing letters' do
+        let(:word) { ['W', nil, 'P', 'R'] }
+
+        it 'renders the masked word' do
+          expect(output.string).to include('W _ P R')
+        end
+      end
+
+      context 'when there are no letters' do
+        let(:word) { [nil, nil, nil, nil] }
+
+        it 'renders the masked word' do
+          expect(output.string).to include('_ _ _ _')
         end
       end
     end

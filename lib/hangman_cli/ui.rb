@@ -3,6 +3,7 @@ module HangmanCLI
 
     YES = [ 'y', 'yes' ]
     EMPTY_RESPONSE = ''
+    PLACEHOLDER = '_'
 
     def initialize(input, output, error)
       @input = input
@@ -26,9 +27,21 @@ module HangmanCLI
       YES.include? choice
     end
 
-    def game_won(word, guesses_required)
+    def show_game_state(word, lives_remaining)
+      masked_word = word.collect { |letter| letter || PLACEHOLDER }
+      @output.puts "The word looks like #{ masked_word.join(' ') }"
+      @output.puts "You have #{ lives_remaining } lives remaining"
+    end
+
+    def get_guess
+      @output.print "Please enter your guess: "
+      get_user_input
+    end
+
+    def game_won(word, guesses_required, lives_remaining)
       #TODO: Handle nil args?
       @output.puts "Congratulations! You have correctly guessed #{ word } in #{ guesses_required } guesses."
+      @output.puts "You still had #{lives_remaining} lives remaining."
     end
 
     def game_lost(word)
