@@ -29,6 +29,7 @@ module HangmanCLI
 
     def show_game_state(word, lives_remaining)
       masked_word = word.collect { |letter| letter || PLACEHOLDER }
+      
       @output.puts "The word looks like #{ masked_word.join(' ') }"
       @output.puts "You have #{ lives_remaining } lives remaining"
     end

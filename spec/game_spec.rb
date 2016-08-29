@@ -3,9 +3,6 @@ require 'hangman_cli/game'
 require 'hangman_cli/ui'
 
 module HangmanCLI
-  LIVES = 5
-  WORD = 'Powershop'
-
   shared_examples 'a game with invalid initial lives' do
     it 'resets initial lives to default' do
       expect(subject.initial_lives).to eq Game::DEFAULT_LIVES
@@ -69,7 +66,7 @@ module HangmanCLI
     context 'when starting a game with invalid initial lives' do
       let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => false) }
 
-      subject { Game.new(ui, lives, WORD) }
+      subject { Game.new(ui, lives, 'Powershop') }
 
       context 'and lives < 1' do
         let(:lives) { 0 }
@@ -100,7 +97,7 @@ module HangmanCLI
       # confirm_start_game => nil because it should never be called (this is expected in the shared example)
       let(:ui) { instance_double(UI, :invalid_word_error => nil, :confirm_start_game => nil) }
 
-      subject { Game.new( ui, LIVES, word) }
+      subject { Game.new(ui, 5, word) }
 
       context 'and the word contains numbers' do
         let(:word) { 'P0wershop' }
@@ -128,12 +125,12 @@ module HangmanCLI
           :confirm_start_game => true,
           :show_game_state => nil,
           :game_won => nil,
-          :game_lost => nil )
+          :game_lost => nil)
         allow(ui).to receive(:get_guess).and_return(*guesses)
         ui
       end
 
-      subject(:game) { Game.new( ui, initial_lives, word )}
+      subject(:game) { Game.new(ui, initial_lives, word) }
 
       before { game.start }
 
@@ -179,13 +176,13 @@ module HangmanCLI
         let(:initial_lives) { 2 }
 
         context 'and the first guess is correct' do
-          let(:guesses) { ['p']}
+          let(:guesses) { ['p'] }
 
           it_behaves_like 'a won game', 1, 0
         end
 
         context 'and the final guess is correct' do
-          let(:guesses) { ['z', 'p']}
+          let(:guesses) { ['z', 'p'] }
 
           it 'displays the game state after the first guess' do
             expect(ui).to have_received(:show_game_state).with([nil], 1)
@@ -195,13 +192,13 @@ module HangmanCLI
         end
 
         context 'and the first guess is incorrect' do
-          let(:guesses) { ['z']}
+          let(:guesses) { ['z'] }
 
           it_behaves_like 'a lost game'
         end
 
         context 'and the final guess is incorrect' do
-          let(:guesses) { ['z', 'x']}
+          let(:guesses) { ['z', 'x'] }
 
           it 'displays the game state after the first guess' do
             expect(ui).to have_received(:show_game_state).with([nil], 1)
@@ -220,12 +217,12 @@ module HangmanCLI
           :confirm_start_game => true,
           :show_game_state => nil,
           :game_won => nil,
-          :game_lost => nil )
+          :game_lost => nil)
         allow(ui).to receive(:get_guess).and_return(*guesses)
         ui
       end
 
-      subject(:game) { Game.new( ui, initial_lives, word )}
+      subject(:game) { Game.new(ui, initial_lives, word) }
 
       before { game.start }
 

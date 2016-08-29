@@ -1,10 +1,12 @@
 module HangmanCLI
   class Game
+
     DEFAULT_LIVES = 5
     MIN_LIVES = 1
     MAX_LIVES = 10
     VALID_WORD_PATTERN = /^[A-Za-z]+$/
 
+    # TODO: Both of these only exist to support the tests ...
     attr_reader :initial_lives, :lives_remaining
 
     def initialize( ui, initial_lives, word )
@@ -25,10 +27,12 @@ module HangmanCLI
     def validate_initial_lives!
       valid_lives = @initial_lives && @initial_lives.between?(MIN_LIVES, MAX_LIVES)
 
-      unless valid_lives
-        @initial_lives = DEFAULT_LIVES
-        @ui.default_lives_warning
-      end
+      default_initial_lives unless valid_lives
+    end
+
+    def default_initial_lives
+      @initial_lives = DEFAULT_LIVES
+      @ui.default_lives_warning
     end
 
     def validate_word!
@@ -84,6 +88,7 @@ module HangmanCLI
     end
 
     def show_game_over
+      #TODO: Mutually exclusive actions yet code probably doesn't indicate that intent
       @ui.game_won(@word, @guesses, @lives_remaining) if game_won?
       @ui.game_lost(@word) if game_lost?
     end
