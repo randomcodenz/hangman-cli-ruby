@@ -39,9 +39,13 @@ module HangmanCLI
     it 'displays the number of guesses required' do
       expect(ui).to have_received(:game_won).with(anything, guesses_required, anything)
     end
-    it 'displays the number of lives remaining' do
 
-      expect(ui).to have_received(:game_won).with(anything, anything, initial_lives-bad_guesses)
+    it 'displays the number of lives remaining' do
+      expect(ui).to have_received(:game_won).with(anything, anything, initial_lives - bad_guesses)
+    end
+
+    it 'does not display the game state after the final guess' do
+      expect(ui).not_to have_received(:show_game_state).with(word.chars, initial_lives - bad_guesses)
     end
   end
 

@@ -65,7 +65,7 @@ module HangmanCLI
 
         @lives_remaining -= 1 unless guess && @word.downcase.include?(guess)
 
-        @ui.show_game_state(@masked_word, @lives_remaining)
+        @ui.show_game_state(@masked_word, @lives_remaining) unless game_over?
       end
 
       show_game_over
