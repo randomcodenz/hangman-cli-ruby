@@ -63,6 +63,9 @@ module HangmanCLI
   end
 
   describe Game do
+    #TODO How deep do we nest contexts?
+    #TODO could be 'when starting an invalid game' => 'with invalid initial lives'/'with invalid word'
+    #TODO and 'when starting a valid game' => 'with a single letter word' etc
     context 'when starting a game with invalid initial lives' do
       let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => false) }
 
@@ -121,8 +124,7 @@ module HangmanCLI
       let(:guesses) { [nil] }
       #FIXME Too many allows - how to do this cleaner
       let(:ui) do
-        ui = instance_double(UI)
-        allow(ui).to receive_messages(
+        ui = instance_double(UI,
           :confirm_start_game => true,
           :show_game_state => nil,
           :game_won => nil,
@@ -207,6 +209,58 @@ module HangmanCLI
 
           it_behaves_like 'a lost game'
         end
+      end
+    end
+
+    context 'when playing a game with a 2 letter word and 2 lives' do
+      let(:initial_lives) { 2 }
+      let(:word) { 'It' }
+      let(:ui) do
+        ui = instance_double(UI,
+          :confirm_start_game => true,
+          :show_game_state => nil,
+          :game_won => nil,
+          :game_lost => nil )
+        allow(ui).to receive(:get_guess).and_return(*guesses)
+        ui
+      end
+
+      subject(:game) { Game.new( ui, initial_lives, word )}
+
+      before { game.start }
+
+      context 'and none of the letters are guessed correctly' do
+        let(:guesses) { ['e', 'x'] }
+
+        it 'updates game state after the first guess' do
+          expect(ui).to have_received(:show_game_state).with([nil, nil], 1)
+        end
+
+        it_behaves_like 'a lost game'
+      end
+
+      context 'and 1 of the letters are guessed correctly' do
+        let(:guesses) { ['i', 'e', 's'] }
+
+        it 'updates the game state after the correct guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives)
+        end
+
+        it 'updates the game state after the 1st incorrect guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], 1)
+        end
+
+        it_behaves_like 'a lost game'
+      end
+
+      context 'and all of the letters are guess correctly' do
+        let(:guesses) { ['i', 't'] }
+
+        it 'updates the game state after the 1st correct guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives)
+        end
+
+        it_behaves_like 'a won game', 2, 0
       end
     end
   end

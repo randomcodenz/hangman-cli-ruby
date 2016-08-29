@@ -45,15 +45,23 @@ module HangmanCLI
     def run
       @guesses = 0
       @lives_remaining = @initial_lives
+      @masked_word = @word.chars.map { |letter| nil }
+
+      @ui.show_game_state(@masked_word, @lives_remaining)
 
       until game_over?
-        @ui.show_game_state([nil], @lives_remaining)
         guess = @ui.get_guess
-
         @guesses += 1
-        @word_guessed = @word == guess
 
-        @lives_remaining -= 1 unless word_guessed?
+        # FIXME cause I am ugly
+        guess_masked_word = @word.chars.map { |letter| letter.downcase == guess ? letter : nil }
+        @masked_word = @masked_word.zip(guess_masked_word).map do |masked_pair|
+          masked_pair.find { |letter| !letter.nil? }
+        end
+
+        @lives_remaining -= 1 unless guess && @word.downcase.include?(guess)
+
+        @ui.show_game_state(@masked_word, @lives_remaining)
       end
 
       show_game_over
@@ -72,7 +80,7 @@ module HangmanCLI
     end
 
     def word_guessed?
-      @word_guessed
+      @masked_word.none? { |letter| letter.nil? }
     end
 
     def show_game_over
