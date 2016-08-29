@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require "hangman_cli"
+require 'bundler/setup'
+require 'hangman_cli'
 
-HangmanCLI.play_hangman(STDIN, STDOUT, STDERR)
+options = HangmanCLI.parse_options(ARGV)
+HangmanCLI.play_hangman(STDIN, STDOUT, STDERR, options)

@@ -5,7 +5,7 @@ require 'hangman_cli/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "hangman_cli"
-  spec.version       = HangmanCli::VERSION
+  spec.version       = HangmanCLI::VERSION
   spec.authors       = ["Neal Blomfield"]
 
   spec.summary       = %q{Command line hangman}
