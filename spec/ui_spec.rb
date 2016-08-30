@@ -10,59 +10,59 @@ module HangmanCLI
     subject(:ui) { UI.new(input, output, error) }
 
     describe '#confirm_start_game' do
-      context 'on every call' do
-        before { ui.confirm_start_game }
+      let(:user_input) { nil }
+      let(:ui_response) { ui.confirm_start_game }
 
-        it 'outputs a confirmation' do
-          expect(output.string).not_to be_nil
-        end
+      before { input.string = user_input if user_input }
+
+      it 'outputs a confirmation' do
+        expect(output.string).not_to be_nil
       end
 
       context 'when responding with nil' do
         # nil is implied as input.string has not been initialised
         it 'returns false' do
-          expect(ui.confirm_start_game).to eq false
+          expect(ui_response).to eq false
         end
       end
 
       context 'when responding y' do
-        #REVIEW: Extract the input string into a let
-        before { input.string = 'y' }
+        let(:user_input) { 'y' }
 
         it 'returns true' do
-          expect(ui.confirm_start_game).to eq  true
+          expect(ui_response).to eq  true
         end
       end
 
       context 'when responding n' do
-        before { input.string = 'n' }
+        let(:user_input) { 'n' }
 
         it 'returns false' do
-          expect(ui.confirm_start_game).to eq false
+          expect(ui_response).to eq false
         end
       end
 
       context 'when responding yes' do
-        before { input.string = 'yes' }
+        let(:user_input) { 'yes' }
 
         it 'returns true' do
-          expect(ui.confirm_start_game).to eq true
+          expect(ui_response).to eq true
         end
       end
 
       context 'when responding no' do
-        before { input.string = 'no' }
+        let(:user_input) { 'no' }
 
         it 'returns false' do
-          expect(ui.confirm_start_game).to eq false
+          expect(ui_response).to eq false
         end
       end
 
       context 'when responding with any other value' do
-        before { input.string = 'WOPR' }
+        let(:user_input) { 'WOPR' }
 
         it 'returns false' do
-          expect(ui.confirm_start_game).to eq false
+          expect(ui_response).to eq false
         end
       end
     end
