@@ -58,9 +58,11 @@ module HangmanCLI
         @guesses += 1
 
         # FIXME cause I am ugly
-        guess_masked_word = @word.chars.map { |letter| letter.downcase == guess ? letter : nil }
-        @masked_word = @masked_word.zip(guess_masked_word).map do |masked_pair|
-          masked_pair.find { |letter| !letter.nil? }
+        #REVIEW: Rework this - 2 ways - extract the zip / match into a method that "explains" what it does
+        #REVIEW: or change the game to record guesses and then remask each time
+        word_masked_with_guess = @word.chars.map { |letter| letter.downcase == guess ? letter : nil }
+        @masked_word = @masked_word.zip(word_masked_with_guess).map do |masked_letter_pair|
+          masked_letter_pair.find { |letter| !letter.nil? }
         end
 
         @lives_remaining -= 1 unless guess && @word.downcase.include?(guess)
