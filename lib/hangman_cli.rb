@@ -1,6 +1,8 @@
 require 'hangman_cli/version'
 require 'hangman_cli/ui'
 require 'hangman_cli/game'
+require 'hangman_cli/dictionary_word_source'
+require 'hangman_cli/fixed_word_source'
 
 module HangmanCLI
   def HangmanCLI.parse_options(args)
@@ -18,7 +20,7 @@ module HangmanCLI
         options[:use_dictionary] = false
       end
 
-      opts.on('-d' '--dictionary', 'Use the system words file from /usr/share/dict/words') do
+      opts.on('-d', '--dictionary', 'Use the system words file from /usr/share/dict/words') do
           options[:use_dictionary] = true unless options[:word]
       end
 
@@ -44,8 +46,9 @@ module HangmanCLI
   end
 
   def HangmanCLI.play_hangman(input, output, error, options)
+    word_source = options[:word] ? FixedWordSource.new(options[:word]) : DictionaryWordSource.new
     ui = UI.new(input, output, error)
-    game = Game.new(ui, options[:lives], options[:word])
+    game = Game.new(ui, options[:lives], word_source.get_word)
     game.start
   end
 end
