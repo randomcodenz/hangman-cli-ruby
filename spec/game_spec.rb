@@ -6,7 +6,7 @@ module HangmanCLI
   #REVIEW: Can these be moved to the bottom of the file?
   shared_examples 'a game with invalid initial lives' do
     it 'resets initial lives to default' do
-      expect(subject.initial_lives).to eq Game::DEFAULT_LIVES
+      expect(ui).to have_received(:default_lives_warning).with(Game::DEFAULT_LIVES)
     end
 
     it 'displays the default lives warning' do
@@ -69,7 +69,7 @@ module HangmanCLI
     context 'when starting a game with invalid initial lives' do
       let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => false) }
 
-      subject { Game.new(ui, lives, 'Powershop') }
+      subject(:game) { Game.new(ui, lives, 'Powershop') }
 
       context 'and lives < 1' do
         let(:lives) { 0 }

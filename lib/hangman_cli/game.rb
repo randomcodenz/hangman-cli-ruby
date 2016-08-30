@@ -7,7 +7,7 @@ module HangmanCLI
     VALID_WORD_PATTERN = /^[A-Za-z]+$/
 
     # TODO: Both of these only exist to support the tests ...
-    attr_reader :initial_lives, :lives_remaining
+    attr_reader :lives_remaining
 
     def initialize( ui, initial_lives, word )
       @ui = ui
@@ -32,7 +32,7 @@ module HangmanCLI
 
     def default_initial_lives
       @initial_lives = DEFAULT_LIVES
-      @ui.default_lives_warning
+      @ui.default_lives_warning(@initial_lives)
     end
 
     def validate_word!

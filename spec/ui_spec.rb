@@ -77,11 +77,17 @@ module HangmanCLI
     end
 
     describe '#default_lives_warning' do
-      before { ui.default_lives_warning }
+      let(:lives) { 3 }
+
+      before { ui.default_lives_warning(lives) }
 
       it 'outputs a warning' do
         expect(output.string).not_to be_empty
         expect(error.string).to be_empty
+      end
+
+      it 'the warning includes the new initial lives' do
+        expect(output.string).to include(lives.to_s)
       end
     end
 
