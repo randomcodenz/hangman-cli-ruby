@@ -3,6 +3,7 @@ require 'hangman_cli/game'
 require 'hangman_cli/ui'
 
 module HangmanCLI
+  #REVIEW: Can these be moved to the bottom of the file?
   shared_examples 'a game with invalid initial lives' do
     it 'resets initial lives to default' do
       expect(subject.initial_lives).to eq Game::DEFAULT_LIVES
@@ -27,6 +28,7 @@ module HangmanCLI
     end
   end
 
+  #REVIEW: Parameters vs lets vs ??
   shared_examples 'a won game' do |guesses_required, bad_guesses|
     it 'displays game won' do
       expect(ui).to have_received(:game_won)
@@ -64,9 +66,6 @@ module HangmanCLI
   end
 
   describe Game do
-    #TODO How deep do we nest contexts?
-    #TODO could be 'when starting an invalid game' => 'with invalid initial lives'/'with invalid word'
-    #TODO and 'when starting a valid game' => 'with a single letter word' etc
     context 'when starting a game with invalid initial lives' do
       let(:ui) { instance_double(UI, :default_lives_warning => nil, :confirm_start_game => false) }
 
@@ -213,6 +212,7 @@ module HangmanCLI
       end
     end
 
+    #REVIEW: Change the game so if you guess the same letter twice you do not get penalised
     context 'when playing a game with a 2 letter word and 2 lives' do
       let(:initial_lives) { 2 }
       let(:word) { 'It' }

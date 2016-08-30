@@ -7,11 +7,11 @@ module HangmanCLI
     let(:output) { StringIO.new }
     let(:error) { StringIO.new }
 
-    subject(:game) { UI.new(input, output, error) }
+    subject(:ui) { UI.new(input, output, error) }
 
     describe '#confirm_start_game' do
       context 'on every call' do
-        before { game.confirm_start_game }
+        before { ui.confirm_start_game }
 
         it 'outputs a confirmation' do
           expect(output.string).not_to be_nil
@@ -21,15 +21,16 @@ module HangmanCLI
       context 'when responding with nil' do
         # nil is implied as input.string has not been initialised
         it 'returns false' do
-          expect(game.confirm_start_game).to eq false
+          expect(ui.confirm_start_game).to eq false
         end
       end
 
       context 'when responding y' do
+        #REVIEW: Extract the input string into a let
         before { input.string = 'y' }
 
         it 'returns true' do
-          expect(game.confirm_start_game).to eq  true
+          expect(ui.confirm_start_game).to eq  true
         end
       end
 
@@ -37,7 +38,7 @@ module HangmanCLI
         before { input.string = 'n' }
 
         it 'returns false' do
-          expect(game.confirm_start_game).to eq false
+          expect(ui.confirm_start_game).to eq false
         end
       end
 
@@ -45,7 +46,7 @@ module HangmanCLI
         before { input.string = 'yes' }
 
         it 'returns true' do
-          expect(game.confirm_start_game).to eq true
+          expect(ui.confirm_start_game).to eq true
         end
       end
 
@@ -53,7 +54,7 @@ module HangmanCLI
         before { input.string = 'no' }
 
         it 'returns false' do
-          expect(game.confirm_start_game).to eq false
+          expect(ui.confirm_start_game).to eq false
         end
       end
 
@@ -61,13 +62,13 @@ module HangmanCLI
         before { input.string = 'WOPR' }
 
         it 'returns false' do
-          expect(game.confirm_start_game).to eq false
+          expect(ui.confirm_start_game).to eq false
         end
       end
     end
 
     describe '#invalid_word_error' do
-      before { game.invalid_word_error }
+      before { ui.invalid_word_error }
 
       it 'outputs an error' do
         expect(error.string).not_to be_empty
@@ -76,7 +77,7 @@ module HangmanCLI
     end
 
     describe '#default_lives_warning' do
-      before { game.default_lives_warning }
+      before { ui.default_lives_warning }
 
       it 'outputs a warning' do
         expect(output.string).not_to be_empty
@@ -89,7 +90,7 @@ module HangmanCLI
       let(:guesses_required) { 3 }
       let(:lives_remaining) { 5 }
 
-      before { game.game_won(word, guesses_required, lives_remaining) }
+      before { ui.game_won(word, guesses_required, lives_remaining) }
 
       context 'the game won message' do
         it 'includes the word' do
@@ -109,12 +110,10 @@ module HangmanCLI
     describe '#game_lost' do
       let(:word) { 'Powershop' }
 
-      before { game.game_lost(word) }
+      before { ui.game_lost(word) }
 
-      context 'the game lost message' do
-        it 'includes the word' do
-          expect(output.string).to include(word)
-        end
+      it 'the game lost message includes the word' do
+        expect(output.string).to include(word)
       end
     end
 
@@ -122,7 +121,7 @@ module HangmanCLI
       let(:word) { 'Powershop'.chars }
       let(:lives_remaining) { 2 }
 
-      before { game.show_game_state(word, lives_remaining) }
+      before { ui.show_game_state(word, lives_remaining) }
 
       it 'renders the number of lives remaining' do
         expect(output.string).to include(lives_remaining.to_s)
