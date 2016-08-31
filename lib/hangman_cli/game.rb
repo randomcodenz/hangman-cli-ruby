@@ -6,6 +6,7 @@ module HangmanCLI
     MAX_LIVES = 10
     VALID_WORD_PATTERN = /^[A-Za-z]+$/
     VALID_GUESS_PATTERN = /^[A-Za-z]$/
+    EMPTY_GUESS = ''
 
     def initialize( ui, initial_lives, word )
       @ui = ui
@@ -51,18 +52,29 @@ module HangmanCLI
 
       # TODO: Infinite loop if user keeps entering invalid letters - like nil
       until game_over?
-        guess = @ui.get_guess
+        guess = canonicalise_guess(@ui.get_guess)
 
-        update_game_state(guess)
+        update_game_state!(guess)
 
-        @ui.show_game_state(get_masked_word, get_lives_remaining) unless game_over?
+        masked_word = get_masked_word
+        lives_remaining = get_lives_remaining
+        correct_guess = correct_guess?(guess)
+
+        @ui.show_game_state(masked_word, lives_remaining, correct_guess) unless game_over?
       end
 
       show_game_over
     end
 
-    def update_game_state(guess)
-      guess.downcase! if guess
+    def canonicalise_guess(guess)
+      if guess
+        guess.downcase
+      else
+        EMPTY_GUESS
+      end
+    end
+
+    def update_game_state!(guess)
       if valid_guess?(guess)
         @guesses << guess unless @guesses.include? guess
       else
@@ -71,12 +83,20 @@ module HangmanCLI
     end
 
     def get_lives_remaining
-      bad_guesses = @guesses - @word.downcase.chars
+      bad_guesses = @guesses.reject { |guess| correct_guess?(guess) }
       @initial_lives - bad_guesses.length
     end
 
     def valid_guess?(guess)
-      return guess && guess =~ VALID_GUESS_PATTERN
+      guess && guess =~ VALID_GUESS_PATTERN
+    end
+
+    def correct_guess?(guess)
+      if valid_guess?(guess)
+        @word.downcase.chars.include?(guess)
+      else
+        nil
+      end
     end
 
     def get_masked_word

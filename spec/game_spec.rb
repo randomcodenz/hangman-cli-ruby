@@ -184,9 +184,8 @@ module HangmanCLI
         context 'and the final guess is correct' do
           let(:guesses) { ['z', 'p'] }
 
-          #TODO It decrements the lives remaining after the invalid guess?
-          it 'sends show_game_state to the ui after the first guess with the current game state' do
-            expect(ui).to have_received(:show_game_state).with([nil], 1)
+          it 'decrements the lives remaining and indicates the guess was incorrect' do
+            expect(ui).to have_received(:show_game_state).with(anything, 1, false)
           end
 
           it_behaves_like 'a won game', 1
@@ -195,9 +194,8 @@ module HangmanCLI
         context 'and the final guess is incorrect' do
           let(:guesses) { ['z', 'x'] }
 
-          #TODO It decrements the lives remaining after the invalid guess?
-          it 'sends show_game_state to the ui with the game state after the first guess' do
-            expect(ui).to have_received(:show_game_state).with([nil], 1)
+          it 'decrements the lives remaining and indicates the guess was incorrect' do
+            expect(ui).to have_received(:show_game_state).with([nil], 1, false)
           end
 
           it_behaves_like 'a lost game'
@@ -208,9 +206,8 @@ module HangmanCLI
           # The invalid guess does not count as a guess
           let(:guesses_required) { 1 }
 
-          it 'does not decrement the lives remaining after the invalid guess' do
-            #Once from before the game loop and once from in game loop
-            expect(ui).to have_received(:show_game_state).with([nil], initial_lives).twice
+          it 'does not decrement the lives remaining or provide guess feedback after the invalid guess' do
+            expect(ui).to have_received(:show_game_state).with([nil], initial_lives, nil)
           end
 
           it_behaves_like 'a won game', 0
@@ -241,8 +238,8 @@ module HangmanCLI
       context 'and none of the letters are guessed correctly' do
         let(:guesses) { ['e', 'x'] }
 
-        it 'sends show_game_state to the ui with the game state after the first guess' do
-          expect(ui).to have_received(:show_game_state).with([nil, nil], 1)
+        it 'decrements lives remaining and indicates an incorrect guess in response to the first guess' do
+          expect(ui).to have_received(:show_game_state).with([nil, nil], 1, false)
         end
 
         it_behaves_like 'a lost game'
@@ -251,12 +248,12 @@ module HangmanCLI
       context 'and 1 of the letters are guessed correctly' do
         let(:guesses) { ['i', 'e', 's'] }
 
-        it 'sends show_game_state to the ui after the correct guess' do
-          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives)
+        it 'does not decrement lives remaining and indicates a correct guess in response to the correct guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives, true)
         end
 
-        it 'sends show_game_state to the ui after the 1st incorrect guess' do
-          expect(ui).to have_received(:show_game_state).with(['I', nil], 1)
+        it 'decrements lives remaining and indicates an incorrect guess in response to the incorrect guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], 1, false)
         end
 
         it_behaves_like 'a lost game'
@@ -265,8 +262,8 @@ module HangmanCLI
       context 'and all of the letters are guess correctly' do
         let(:guesses) { ['i', 't'] }
 
-        it 'sends show_game_state to the ui after the 1st guess' do
-          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives)
+        it 'does not decrements lives remaining and indicates a correct guess in response to the first guess' do
+          expect(ui).to have_received(:show_game_state).with(['I', nil], initial_lives, true)
         end
 
         it_behaves_like 'a won game', 0
