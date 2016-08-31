@@ -93,7 +93,7 @@ module HangmanCLI
 
     describe '#invalid_guess_warning' do
       let(:invalid_guess) { 'bad guess' }
-      
+
       before { ui.invalid_guess_warning(invalid_guess) }
 
       it 'outputs a warning' do
@@ -163,11 +163,16 @@ module HangmanCLI
     describe '#show_game_state' do
       let(:word) { 'Powershop'.chars }
       let(:lives_remaining) { 2 }
+      let(:guess_matched) { nil }
 
-      before { ui.show_game_state(word, lives_remaining) }
+      before { ui.show_game_state(word, lives_remaining, guess_matched) }
 
       it 'renders the number of lives remaining' do
         expect(output.string).to include(lives_remaining.to_s)
+      end
+
+      it 'does not render the guess feedback' do
+        expect(output.string).not_to include('Your last guess ')
       end
 
       context 'when there are no missing letters' do
@@ -191,6 +196,22 @@ module HangmanCLI
 
         it 'renders the masked word' do
           expect(output.string).to include('_ _ _ _')
+        end
+      end
+
+      context 'when the last guess matched a letter' do
+        let(:guess_matched) { true }
+
+        it 'renders the guess matched feedback' do
+          expect(output.string).to include('Your last guess uncovered a letter')
+        end
+      end
+
+      context 'when the last guess did not match a letter' do
+        let(:guess_matched) { false }
+
+        it 'renders the guess did not match feedback' do
+          expect(output.string).to include('Your last guess did not match anything')
         end
       end
     end

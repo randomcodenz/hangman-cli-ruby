@@ -27,9 +27,11 @@ module HangmanCLI
       YES.include? choice
     end
 
-    def show_game_state(word, lives_remaining)
-      masked_word = word.collect { |letter| letter || PLACEHOLDER }
+    def show_game_state(word, lives_remaining, guess_matched = nil)
+      masked_word = word.map { |letter| letter || PLACEHOLDER }
 
+      @output.puts "Your last guess #{ guess_matched ? 'uncovered a letter' : 'did not match anything'}" unless guess_matched.nil?
+      @output.puts
       @output.puts "The word looks like #{ masked_word.join(' ') }"
       @output.puts "You have #{ lives_remaining } lives remaining"
     end
