@@ -5,9 +5,7 @@ module HangmanCLI
     MIN_LIVES = 1
     MAX_LIVES = 10
     VALID_WORD_PATTERN = /^[A-Za-z]+$/
-
-    # TODO: Both of these only exist to support the tests ...
-    attr_reader :lives_remaining
+    VALID_GUESS_PATTERN = /^[A-Za-z]$/
 
     def initialize( ui, initial_lives, word )
       @ui = ui
@@ -47,52 +45,68 @@ module HangmanCLI
     end
 
     def run
-      @guesses = 0
-      @lives_remaining = @initial_lives
-      @masked_word = @word.chars.map { |letter| nil }
+      @guesses = []
 
-      @ui.show_game_state(@masked_word, @lives_remaining)
+      @ui.show_game_state(get_masked_word, get_lives_remaining)
 
+      # TODO: Infinite loop if user keeps entering invalid letters - like nil
       until game_over?
         guess = @ui.get_guess
-        @guesses += 1
 
-        # FIXME cause I am ugly
-        #REVIEW: Rework this - 2 ways - extract the zip / match into a method that "explains" what it does
-        #REVIEW: or change the game to record guesses and then remask each time
-        word_masked_with_guess = @word.chars.map { |letter| letter.downcase == guess ? letter : nil }
-        @masked_word = @masked_word.zip(word_masked_with_guess).map do |masked_letter_pair|
-          masked_letter_pair.find { |letter| !letter.nil? }
-        end
+        update_game_state(guess)
 
-        @lives_remaining -= 1 unless guess && @word.downcase.include?(guess)
-
-        @ui.show_game_state(@masked_word, @lives_remaining) unless game_over?
+        @ui.show_game_state(get_masked_word, get_lives_remaining) unless game_over?
       end
 
       show_game_over
     end
 
+    def update_game_state(guess)
+      guess.downcase! if guess
+      if valid_guess?(guess)
+        @guesses << guess unless @guesses.include? guess
+      else
+        @ui.invalid_guess_warning(guess)
+      end
+    end
+
+    def get_lives_remaining
+      bad_guesses = @guesses - @word.downcase.chars
+      @initial_lives - bad_guesses.length
+    end
+
+    def valid_guess?(guess)
+      return guess && guess =~ VALID_GUESS_PATTERN
+    end
+
+    def get_masked_word
+      @word.chars.map { |letter| @guesses.include?(letter.downcase) ? letter : nil }
+    end
+
     def game_over?
-      game_won? || game_lost?
+      lives_remaining = get_lives_remaining
+      game_won?(lives_remaining) || game_lost?(lives_remaining)
     end
 
-    def game_won?
-      @lives_remaining > 0 && word_guessed?
+    def game_won?(lives_remaining)
+      lives_remaining > 0 && word_guessed?
     end
 
-    def game_lost?
-      @lives_remaining <= 0
+    def game_lost?(lives_remaining)
+      lives_remaining <= 0
     end
 
     def word_guessed?
-      @masked_word.none? { |letter| letter.nil? }
+      get_masked_word.none?(&:nil?)
     end
 
     def show_game_over
-      #TODO: Mutually exclusive actions yet code probably doesn't indicate that intent
-      @ui.game_won(@word, @guesses, @lives_remaining) if game_won?
-      @ui.game_lost(@word) if game_lost?
+      lives_remaining = get_lives_remaining
+
+      #TODO: Layout? if / elsif / else vs this as these 3 lines are mutually exclusive
+      @ui.game_won(@word, @guesses.length, get_lives_remaining) if game_won?(lives_remaining)
+      @ui.game_lost(@word, @guesses.length, @initial_lives) if game_lost?(lives_remaining)
+      raise StandardError, "Something broke!" if game_won?(lives_remaining) && game_lost?(lives_remaining)
     end
   end
 end

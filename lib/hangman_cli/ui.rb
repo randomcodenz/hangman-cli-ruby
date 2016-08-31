@@ -39,15 +39,18 @@ module HangmanCLI
       get_user_input
     end
 
+    def invalid_guess_warning(invalid_guess)
+      @output.puts "'#{ invalid_guess.nil? ? 'nil' : invalid_guess }' is not a valid guess."
+    end
+
     def game_won(word, guesses_required, lives_remaining)
-      #TODO: Handle nil args?
       @output.puts "Congratulations! You have correctly guessed #{ word } in #{ guesses_required } guesses."
       @output.puts "You still had #{lives_remaining} lives remaining."
     end
 
-    def game_lost(word)
-      #TODO: handle nil args?
+    def game_lost(word, guesses_used, lives)
       @output.puts "You appear to have run out of lives. The word was #{ word }."
+      @output.puts "You made #{ guesses_used } guesses and #{ lives } were incorrect."
     end
 
     private

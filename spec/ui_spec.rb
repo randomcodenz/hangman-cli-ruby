@@ -91,6 +91,33 @@ module HangmanCLI
       end
     end
 
+    describe '#invalid_guess_warning' do
+      let(:invalid_guess) { 'bad guess' }
+      
+      before { ui.invalid_guess_warning(invalid_guess) }
+
+      it 'outputs a warning' do
+        expect(output.string).not_to be_empty
+        expect(error.string).to be_empty
+      end
+
+      context 'when the invalid guess is nil' do
+        let(:invalid_guess) { nil }
+
+        it 'the warning includes the invalid guess' do
+          expect(output.string).to include('nil')
+        end
+      end
+
+      context 'when the invalid guess is not nil' do
+        let(:invalid_guess) { '123' }
+
+        it 'the warning includes the invalid guess' do
+          expect(output.string).to include(invalid_guess)
+        end
+      end
+    end
+
     describe '#game_won' do
       let(:word) { 'Powershop' }
       let(:guesses_required) { 3 }
@@ -115,11 +142,21 @@ module HangmanCLI
 
     describe '#game_lost' do
       let(:word) { 'Powershop' }
+      let(:guesses_used) { 5 }
+      let(:lives) { 3 }
 
-      before { ui.game_lost(word) }
+      before { ui.game_lost(word, guesses_used, lives) }
 
       it 'the game lost message includes the word' do
         expect(output.string).to include(word)
+      end
+
+      it 'the game lost message includes the number of guesses taken' do
+        expect(output.string).to include(guesses_used.to_s)
+      end
+
+      it 'the game lost message includes the number of lives used' do
+        expect(output.string).to include(lives.to_s)
       end
     end
 
