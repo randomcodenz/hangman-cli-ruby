@@ -4,69 +4,44 @@ require 'hangman_cli/ui'
 
 module HangmanCLI
   #REVIEW: Can these be moved to the bottom of the file?
-  #REVIEW: Change language - not asserting display but rather ui has received the correct message
   shared_examples 'a game with invalid initial lives' do
-    it 'sends default_lives_warning to ui' do
-      expect(ui).to have_received(:default_lives_warning)
-    end
-
-    it 'includes the default lives value in the default_lives_warning message' do
+    it 'notifies the user that the lives have been reset to the default value' do
       expect(ui).to have_received(:default_lives_warning).with(Game::DEFAULT_LIVES)
     end
 
-    it 'sends confirm_start_game to ui' do
+    it 'confirms the user wants to start the game' do
       expect(ui).to have_received(:confirm_start_game)
     end
   end
 
   shared_examples 'a game with an invalid word' do
-    it 'sends invalid_word_error to ui' do
+    it 'notifies the user that the word is invalid' do
       expect(ui).to have_received(:invalid_word_error)
     end
 
-    it 'does not send confirm_start_game to ui' do
+    it 'does not start a game' do
       expect(ui).not_to have_received(:confirm_start_game)
     end
   end
 
   #REVIEW: Parameters vs lets vs ??
   shared_examples 'a won game' do |bad_guess_count|
-    it 'does not send show_game_state after the final guess' do
+    it 'does not show the game state after the final guess' do
       expect(ui).not_to have_received(:show_game_state).with(word.chars, initial_lives - bad_guess_count)
     end
 
-    it 'sends game_won to ui' do
-      expect(ui).to have_received(:game_won)
-    end
-
-    it 'includes the word in the game_won message' do
-      expect(ui).to have_received(:game_won).with(word, anything, anything)
-    end
-
-    it 'includes the guesses required in the game won message' do
-      expect(ui).to have_received(:game_won).with(anything, guesses_required, anything)
-    end
-
-    it 'includes lives remaining in the game_won message' do
-      expect(ui).to have_received(:game_won).with(anything, anything, initial_lives - bad_guess_count)
+    it 'notifies the user the game is won and includes guesses_required and lives remaining' do
+      expect(ui).to have_received(:game_won).with(word, guesses_required, initial_lives - bad_guess_count)
     end
   end
 
   shared_examples 'a lost game' do
-    it 'sends game_lost to the ui' do
-      expect(ui).to have_received(:game_lost)
+    it 'does not show the game state after the final guess' do
+      expect(ui).not_to have_received(:show_game_state).with(word.chars, 0)
     end
 
-    it 'includes the word in the game_lost message' do
-      expect(ui).to have_received(:game_lost).with(word, anything, anything)
-    end
-
-    it 'includes the guesses taken in the game_lost message' do
-      expect(ui).to have_received(:game_lost).with(anything, guesses_required, anything)
-    end
-
-    it 'includes the lives used in the game_lost message' do
-      expect(ui).to have_received(:game_lost).with(anything, anything, initial_lives)
+    it 'notifies the user the game is lost and includes guesses used and lives lost' do
+      expect(ui).to have_received(:game_lost).with(word, guesses_required, initial_lives)
     end
   end
 
@@ -147,15 +122,15 @@ module HangmanCLI
       context 'and only 1 life' do
         let(:initial_lives) { 1 }
 
-        it 'sends confirm_start_game to the ui' do
+        it 'confirms the users wants to start the game' do
           expect(ui).to have_received(:confirm_start_game)
         end
 
-        it 'sends show_game_state to the ui with initial game state' do
+        it 'shows the user the initial game state' do
           expect(ui).to have_received(:show_game_state).with([nil], initial_lives)
         end
 
-        it 'sends get_guess to the ui' do
+        it 'requests a guess from the user' do
           expect(ui).to have_received(:get_guess)
         end
 
