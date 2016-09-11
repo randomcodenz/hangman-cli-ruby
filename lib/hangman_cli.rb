@@ -12,7 +12,7 @@ module HangmanCLI
       opts.banner = "Usage:\n\thangman -w <word> [-l <lives>]\n\thangman -d [-l <lives>]\nOptions:"
 
       opts.on('-l', '--lives LIVES', 'Number of lives to start the game with') do |lives|
-        options[:lives] = lives
+        options[:lives] = lives.to_i
       end
 
       opts.on('-w', '--word WORD', 'The word to be guessed (overrides -d)') do |word|
